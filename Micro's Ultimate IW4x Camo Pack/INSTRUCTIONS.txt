@@ -1,0 +1,11 @@
+HOW TO INSTALL CUSTOM CAMOS
+
+OPEN IW4X DIRECTORY
+
+2 EASY ASS WAYS TO INSTALL:
+
+IW4x Directory -> userraw -> images *drag & drop*
+
+IW4x Directory -> main -> IW_07 -> images *drag & drop*
+
+My Twitter:  https://www.twitter.com/ShakeMW3
