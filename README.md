@@ -2,7 +2,7 @@
 
 Welcome to the ultimate tool for creating and extracting custom camouflages for Modern Warfare 2 (IW4x).
 
-**[Launch Web App (GitHub Pages)](https://frank9615.github.io/iw4x-customcamos/)**
+**[Launch Web App (GitHub Pages)](https://frank9615.github.io/iw4x-customcamos/public)**
 
 ![Web App Preview](image.png)
 
