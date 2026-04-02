@@ -60,18 +60,18 @@ errorClose.addEventListener('click', () => {
 async function initMagick() {
     if (initialized) return;
     
-    updateProgress(10, "Scaricamento Motore WASM...");
+    updateProgress(10, "Downloading WASM Engine...");
     
     try {
         const wasmUrl = 'https://cdn.jsdelivr.net/npm/@imagemagick/magick-wasm@0.0.38/dist/magick.wasm';
         const response = await fetch(wasmUrl);
-        if (!response.ok) throw new Error(`Impossibile scaricare il file .wasm`);
+        if (!response.ok) throw new Error(`Unable to download .wasm file`);
         const wasmBytes = await response.arrayBuffer();
-        if (wasmBytes.byteLength === 0) throw new Error("Il file .wasm scaricato è vuoto.");
+        if (wasmBytes.byteLength === 0) throw new Error("The downloaded .wasm file is empty.");
 
         await initializeImageMagick(new Uint8Array(wasmBytes));
         initialized = true;
-        updateProgress(30, "Motore WASM Caricato.");
+        updateProgress(30, "WASM Engine Loaded.");
     } catch (err) {
         console.error('Initialization error:', err);
         showError(`INITIALIZATION_FAILED: ${err.message}`);
@@ -87,7 +87,7 @@ modeCreate.addEventListener('click', () => {
     modeCreate.classList.add('active');
     modeExtract.classList.remove('active');
     fileInput.accept = 'image/*';
-    dropText.innerHTML = `Trascina la tua immagine oppure <span class="highlight">sfoglia</span>`;
+    dropText.innerHTML = `Drag your image or <span class="highlight">browse</span>`;
     dropHint.textContent = 'PNG • JPG • WEBP • BMP';
     resetUI();
 });
@@ -97,7 +97,7 @@ modeExtract.addEventListener('click', () => {
     modeExtract.classList.add('active');
     modeCreate.classList.remove('active');
     fileInput.accept = '.iwi';
-    dropText.innerHTML = `Trascina il tuo file .IWI oppure <span class="highlight">sfoglia</span>`;
+    dropText.innerHTML = `Drag your .IWI file or <span class="highlight">browse</span>`;
     dropHint.textContent = 'IWI VERSION 8 FILES';
     resetUI();
 });
@@ -142,7 +142,7 @@ function handleFile(file) {
         };
         reader.readAsDataURL(file);
     } else {
-        showError("FORMAT_ERROR: Il file non è un'immagine o un .iwi");
+        showError("FORMAT_ERROR: The file is not an image or .iwi");
     }
 }
 
@@ -154,25 +154,25 @@ extractBtn.addEventListener('click', async () => {
     
     try {
         await initMagick();
-        updateProgress(50, "Estrazione header IWI...");
+        updateProgress(50, "Extracting IWI header...");
         
         const arrayBuffer = await currentFile.arrayBuffer();
         const view = new DataView(arrayBuffer);
         
         // Check "IWi\x08"
         if (view.getUint8(0)!==73 || view.getUint8(1)!==87 || view.getUint8(2)!==105 || view.getUint8(3)!==8) {
-            throw new Error("Il file non ha un header IWi8 valido.");
+            throw new Error("The file doesn't have a valid IWi8 header.");
         }
         
         const format = view.getUint16(8, true);
-        if (format !== 11 && format !== 13) throw new Error("Compressione non supportata (solo DXT1 e DXT5)."); 
+        if (format !== 11 && format !== 13) throw new Error("Unsupported compression (only DXT1 and DXT5)."); 
         
         const isDxt1 = format === 11;
         const width = view.getUint16(10, true);
         const height = view.getUint16(12, true);
         
         const pixelData = new Uint8Array(arrayBuffer.slice(32));
-        updateProgress(70, "Aggiunta header DDS...");
+        updateProgress(70, "Adding DDS header...");
         
         // Build DDS header
         const ddsHeader = new ArrayBuffer(128);
@@ -195,7 +195,7 @@ extractBtn.addEventListener('click', async () => {
         ddsFile.set(new Uint8Array(ddsHeader), 0);
         ddsFile.set(pixelData, 128);
         
-        updateProgress(85, "Decodifica Texture...");
+        updateProgress(85, "Decoding Texture...");
         ImageMagick.read(ddsFile, (img) => {
             img.write(MagickFormat.Png, (pngData) => {
                 outBlob = new Blob([pngData], { type: 'image/png' });
@@ -208,7 +208,7 @@ extractBtn.addEventListener('click', async () => {
                 imagePreview.src = URL.createObjectURL(outBlob);
                 fileResLabel.textContent = `${width}x${height}px`;
                 
-                updateProgress(100, "Decodifica Completata!");
+                updateProgress(100, "Decoding Complete!");
                 
                 setTimeout(() => {
                     statusSection.classList.add('hidden');
@@ -235,7 +235,7 @@ convertBtn.addEventListener('click', async () => {
     
     try {
         await initMagick();
-        updateProgress(40, "Generazione Canvas (400x400)...");
+        updateProgress(40, "Generating Canvas (400x400)...");
         
         // 1. Draw image to canvas 400x400
         const objectUrl = URL.createObjectURL(currentFile);
@@ -248,7 +248,7 @@ convertBtn.addEventListener('click', async () => {
         const ctx = canvas.getContext('2d');
         ctx.drawImage(img, 0, 0, 400, 400);
         
-        updateProgress(50, "Creazione Menu Image (400x152)...");
+        updateProgress(50, "Creating Menu Image (400x152)...");
         // 2. Draw Menu Image 400x152 + borders
         const menuCanvas = document.createElement('canvas');
         menuCanvas.width = 400; menuCanvas.height = 152;
@@ -312,19 +312,19 @@ convertBtn.addEventListener('click', async () => {
             });
         };
         
-        updateProgress(70, "Compressione IWI 400x400...");
+        updateProgress(70, "Compressing IWI 400x400...");
         const camoIwiBytes = await getIwi(camoPngBlob, 400, 400);
         
-        updateProgress(80, "Compressione IWI Menu...");
+        updateProgress(80, "Compressing IWI Menu...");
         const menuIwiBytes = await getIwi(menuPngBlob, 400, 152);
         
-        updateProgress(90, "Pacchettizzazione ZIP...");
+        updateProgress(90, "Packaging ZIP...");
         const zip = new JSZip();
         
         // Generate base name
         const baseName = currentFile.name.split('.')[0];
         
-        zip.file(`weapon_camo_${baseName}.iwi`, camoIwiBytes);
+        zip.file(`weapon_camo_arctic.iwi`, camoIwiBytes);
         zip.file(`weapon_camo_menu_arctic.png`, await menuPngBlob.arrayBuffer());
         zip.file(`weapon_camo_menu_arctic.iwi`, menuIwiBytes);
         
@@ -334,7 +334,7 @@ convertBtn.addEventListener('click', async () => {
         resultFilename.textContent = outFilename;
         resultSize.textContent = `${(outBlob.size / 1024).toFixed(1)} KB`;
         
-        updateProgress(100, "Completato!");
+        updateProgress(100, "Complete!");
         
         setTimeout(() => {
             statusSection.classList.add('hidden');
@@ -368,7 +368,7 @@ resetBtn.addEventListener('click', resetUI);
 function resetUI() {
     currentFile = null;
     outBlob = null;
-    updateProgress(0, "Pronto.");
+    updateProgress(0, "Ready.");
     dropZone.classList.remove('hidden');
     previewSection.classList.add('hidden');
     statusSection.classList.add('hidden');

@@ -23,8 +23,8 @@
         <main>
             <!-- Mode Switcher -->
             <div class="mode-switch">
-                <button class="mode-btn active" id="mode-create">Crea Camo (.IWI)</button>
-                <button class="mode-btn" id="mode-extract">Estrai Camo (.PNG)</button>
+                <button class="mode-btn active" id="mode-create">Create Camo (.IWI)</button>
+                <button class="mode-btn" id="mode-extract">Extract Camo (.PNG)</button>
             </div>
 
             <!-- Stage 1: Upload -->
@@ -36,7 +36,7 @@
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         </svg>
                     </div>
-                    <p>Trascina la tua immagine o file .IWI oppure <span class="highlight">sfoglia</span></p>
+                    <p>Drag your image or .IWI file or <span class="highlight">browse</span></p>
                     <span class="formats-hint">PNG • JPG • WEBP • BMP /// IWI</span>
                 </div>
                 <input type="file" id="file-input" hidden accept="image/*,.iwi">
@@ -54,10 +54,10 @@
                 
                 <div class="controls">
                     <button id="convert-btn" class="glow-btn">
-                        GENERA FILES .IWI (ZIP)
+                        GENERATE .IWI FILES (ZIP)
                     </button>
                     <button id="extract-btn" class="glow-btn hidden" style="background:var(--accent-green); box-shadow: 0 0 20px rgba(0,255,100,0.2);">
-                        ESTRAI IMMAGINE DA .IWI
+                        EXTRACT IMAGE FROM .IWI
                     </button>
                 </div>
             </div>
@@ -66,7 +66,7 @@
             <div id="status-section" class="status-section hidden">
                 <div class="loader-container">
                     <div class="loader"></div>
-                    <p id="status-msg">Preparazione Motore WASM...</p>
+                    <p id="status-msg">Preparing WASM Engine...</p>
                     <div class="progress-container">
                         <div id="progress-bar" class="progress-bar"></div>
                     </div>
@@ -79,7 +79,7 @@
                 <div class="error-box">
                     <div class="error-icon">!</div>
                     <h3>SYSTEM FAILURE</h3>
-                    <p id="error-msg">Errore sconosciuto.</p>
+                    <p id="error-msg">Unknown error.</p>
                     <button id="error-close" class="outline-btn">REBOOT SYSTEM</button>
                 </div>
             </div>
@@ -109,28 +109,23 @@
                         <span id="result-filename" class="result-filename">weapon_camo_gold.iwi</span>
                         <div class="result-meta">
                             <span id="result-size" class="result-size">1.4 MB</span>
-                            <span class="status-badge">PRONTO AL DEPLOY</span>
+                            <span class="status-badge">READY TO DEPLOY</span>
                         </div>
                     </div>
                 </div>
 
-                <div class="instruction-box">
-                    <span class="label">DESTINAZIONE:</span>
-                    <div class="path-display">
-                        <code>iw4x-folder / userraw / <span class="highlight">images</span> /</code>
-                    </div>
-                </div>
+
                 
                 <div class="download-actions">
                     <button id="download-btn" class="glow-btn success">
-                        SCARICA PACCHETTO ZIP
+                        DOWNLOAD ZIP PACKAGE
                         <div class="btn-shine"></div>
                     </button>
                     <button id="download-png-btn" class="glow-btn success hidden">
-                        SCARICA .PNG ESTRATTO
+                        DOWNLOAD EXTRACTED .PNG
                         <div class="btn-shine"></div>
                     </button>
-                    <button id="reset-btn" class="outline-btn">NUOVA OPERAZIONE</button>
+                    <button id="reset-btn" class="outline-btn">NEW OPERATION</button>
                 </div>
             </div>
         </main>
