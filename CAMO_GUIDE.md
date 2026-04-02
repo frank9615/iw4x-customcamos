@@ -10,12 +10,13 @@ Through reverse engineering of the community tools, the IWI v8 header was found 
 
 | Offset | Size | Name | Description |
 | :--- | :--- | :--- | :--- |
-| 0 | 4 | Magic | Always `iwi8` |
-| 4 | 1 | Format | `0x01`: DXT1, `0x02`: DXT3, `0x03`: DXT5 |
-| 5 | 1 | Usage | Usually `0x02` for weapon textures |
-| 6 | 2 | Width | Texture width (little-endian uint16) |
-| 8 | 2 | Height | Texture height (little-endian uint16) |
-| 10 | 22 | Padding | Extra header data (usually 0x00) |
+| 0 | 4 | Magic | `IWi\x08` (hex: 49 57 69 08) |
+| 4 | 4 | Flags | Valori operativi (es. `371` o `0x0173` per DXT5) |
+| 8 | 2 | Format | ID Formato (`11` o `0x0B` per DXT1, `13` o `0x0D` per DXT5) |
+| 10 | 2 | Width | Texture width (little-endian uint16) |
+| 12 | 2 | Height | Texture height (little-endian uint16) |
+| 14 | 2 | Depth | Tipicamente `1` per le mimetiche |
+| 16 | 16 | MipOff | 4 valori interi a 32-bit (offset). Puntano all'EOF se senza mipmaps |
 
 ### Texture Compression
 The game prefers **DXT** (S3TC) compression for performance. We used **DXT5** for this camo to support potential transparency and higher detail, although DXT1 is also common for simple textures.

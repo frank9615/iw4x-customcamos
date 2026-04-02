@@ -28,33 +28,29 @@ def convert_dds_to_iwi(dds_path, iwi_path, format_type='dxt5'):
     pixel_data = dds_data[128:]
     
     # IWI v8 Header (32 bytes)
-    # 0-3: Magic 'iwi8'
-    # 4: Format (0x01 = DXT1, 0x02 = DXT3, 0x03 = DXT5)
-    # 5: Usage (0x02 seems standard for world textures)
-    # 6-7: Width
-    # 8-9: Height
-    # ...
+    # 0-3: Magic 'IWi\x08'
+    # 4-7: Flags (e.g. 371 for DXT5)
+    # 8-9: Format (11 = DXT1, 13 = DXT5)
+    # 10-11: Width
+    # 12-13: Height
+    # 14-15: Depth (1)
+    # 16-31: Mipmap Offsets
     
-    format_map = {
-        'dxt1': 0x01,
-        'dxt3': 0x02,
-        'dxt5': 0x03
-    }
+    fmt_val = 13 if format_type.lower() == 'dxt5' else 11
     
     iwi_header = bytearray(32)
-    iwi_header[0:4] = b'iwi8'
-    iwi_header[4] = format_map.get(format_type.lower(), 0x03)
-    iwi_header[5] = 0x02 # Usage
+    iwi_header[0:4] = b'IWi\x08'
+    struct.pack_into('<I', iwi_header, 4, 371)
+    struct.pack_into('<H', iwi_header, 8, fmt_val)
+    struct.pack_into('<H', iwi_header, 10, width)
+    struct.pack_into('<H', iwi_header, 12, height)
+    struct.pack_into('<H', iwi_header, 14, 1)
     
-    # Width and Height are uint16 in IWI
-    struct.pack_into('<H', iwi_header, 6, width)
-    struct.pack_into('<H', iwi_header, 8, height)
-    
-    # Mipmap count? Offset 12 seems to be mipmap count in some versions
-    # For now we'll assume the DDS has whatever it has.
-    
-    # Some versions have the file size at offset 24 or similar
-    # But for MW2, simple 32-byte header + data usually works.
+    final_size = 32 + len(pixel_data)
+    struct.pack_into('<I', iwi_header, 16, final_size)
+    struct.pack_into('<I', iwi_header, 20, final_size)
+    struct.pack_into('<I', iwi_header, 24, final_size)
+    struct.pack_into('<I', iwi_header, 28, final_size)
     
     with open(iwi_path, 'wb') as f:
         f.write(iwi_header)

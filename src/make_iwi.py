@@ -14,13 +14,22 @@ def create_iwi_header(width, height, format_type='dxt5'):
     }
     
     header = bytearray(32)
-    header[0:4] = b'iwi8'
-    header[4] = format_map.get(format_type.lower(), 0x03)
-    header[5] = 0x02  # Usage: World/Weapon Texture
+    header[0:4] = b'IWi\x08'
     
-    # Width and Height at offsets 6 and 8
-    struct.pack_into('<H', header, 6, width)
-    struct.pack_into('<H', header, 8, height)
+    # Flags/format properties for DXT5
+    struct.pack_into('<I', header, 4, 371)
+    
+    # Format map DXT5 is 13, DXT1 is 11
+    # Usage: format_map.get(format_type.lower(), 13)
+    fmt_val = 13 if format_type.lower() == 'dxt5' else 11
+    struct.pack_into('<H', header, 8, fmt_val)
+    
+    # Width and Height at offsets 10 and 12
+    struct.pack_into('<H', header, 10, width)
+    struct.pack_into('<H', header, 12, height)
+    
+    # Depth
+    struct.pack_into('<H', header, 14, 1)
     
     return header
 
@@ -72,9 +81,18 @@ def make_iwi(input_image, output_iwi):
         height = struct.unpack('<I', dds_data[12:16])[0]
         width = struct.unpack('<I', dds_data[16:20])[0]
         
+        # pixel data
+        pixel_data = dds_data[128:]  # Skip 128-byte DDS header
+        
         # 3. Create IWI file
         header = create_iwi_header(width, height, 'dxt5')
-        pixel_data = dds_data[128:]  # Skip 128-byte DDS header
+        
+        # Fill file-size/mipmap offsets at 16, 20, 24, 28
+        final_size = 32 + len(pixel_data)
+        struct.pack_into('<I', header, 16, final_size)
+        struct.pack_into('<I', header, 20, final_size)
+        struct.pack_into('<I', header, 24, final_size)
+        struct.pack_into('<I', header, 28, final_size)
         
         with open(output_iwi, 'wb') as f:
             f.write(header)
