@@ -238,55 +238,72 @@ convertBtn.addEventListener('click', async () => {
     previewSection.classList.add('hidden');
     statusSection.classList.remove('hidden');
     
+    const generateMenu = document.getElementById('generate-menu-checkbox')?.checked ?? true;
+    const isMaxRes = document.getElementById('max-res-checkbox')?.checked ?? false;
+    
     try {
         await initMagick();
-        updateProgress(40, "Generating Canvas (400x400)...");
+        updateProgress(40, "Generating Canvas...");
         
-        // 1. Draw image to canvas 400x400
+        // 1. Draw image to canvas
         const objectUrl = URL.createObjectURL(currentFile);
         const img = new Image();
         img.src = objectUrl;
         await new Promise(r => { img.onload = r; });
         
+        const targetWidth = isMaxRes ? img.width : 400;
+        const targetHeight = isMaxRes ? img.height : 400;
+        
         const canvas = document.createElement('canvas');
-        canvas.width = 400; canvas.height = 400;
+        canvas.width = targetWidth; canvas.height = targetHeight;
         const ctx = canvas.getContext('2d');
-        ctx.drawImage(img, 0, 0, 400, 400);
+        ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
         
-        updateProgress(50, "Creating Menu Image (400x152)...");
-        // 2. Draw Menu Image 400x152 + borders
-        const menuCanvas = document.createElement('canvas');
-        menuCanvas.width = 400; menuCanvas.height = 152;
-        const menuCtx = menuCanvas.getContext('2d');
+        let menuCanvas, menuCtx;
+        const menuHeight = isMaxRes ? targetHeight : 152;
         
-        // Crop centered vertically from 400x400 image
-        const topY = (400 - 152) / 2;
-        menuCtx.drawImage(canvas, 0, topY, 400, 152, 0, 0, 400, 152);
-        
-        // Setup Instagram watermark
-        menuCtx.font = "bold 20px 'Inter', sans-serif";
-        menuCtx.fillStyle = "rgba(255, 255, 255, 0.7)";
-        menuCtx.textAlign = "right";
-        menuCtx.textBaseline = "bottom";
-        
-        // Add shadow for better readability
-        menuCtx.shadowColor = "rgba(0, 0, 0, 0.8)";
-        menuCtx.shadowBlur = 4;
-        menuCtx.shadowOffsetX = 1;
-        menuCtx.shadowOffsetY = 1;
-        
-        // Draw watermark at bottom right with padding
-        menuCtx.fillText("@frahrdi", 390, 142);
-        
-        // Reset shadow so it doesn't affect further operations
-        menuCtx.shadowColor = "transparent";
-        menuCtx.shadowBlur = 0;
-        menuCtx.shadowOffsetX = 0;
-        menuCtx.shadowOffsetY = 0;
+        if (generateMenu) {
+            updateProgress(50, "Creating Menu Image...");
+            // 2. Draw Menu Image + borders
+            menuCanvas = document.createElement('canvas');
+            menuCanvas.width = targetWidth; 
+            menuCanvas.height = menuHeight;
+            menuCtx = menuCanvas.getContext('2d');
+            
+            if (isMaxRes) {
+                // No crop
+                menuCtx.drawImage(canvas, 0, 0, targetWidth, targetHeight, 0, 0, targetWidth, targetHeight);
+            } else {
+                // Crop centered vertically from 400x400 image
+                const topY = (400 - 152) / 2;
+                menuCtx.drawImage(canvas, 0, topY, 400, 152, 0, 0, 400, 152);
+            }
+            
+            // Setup Instagram watermark
+            menuCtx.font = "bold 20px 'Inter', sans-serif";
+            menuCtx.fillStyle = "rgba(255, 255, 255, 0.7)";
+            menuCtx.textAlign = "right";
+            menuCtx.textBaseline = "bottom";
+            
+            // Add shadow for better readability
+            menuCtx.shadowColor = "rgba(0, 0, 0, 0.8)";
+            menuCtx.shadowBlur = 4;
+            menuCtx.shadowOffsetX = 1;
+            menuCtx.shadowOffsetY = 1;
+            
+            // Draw watermark at bottom right with padding
+            menuCtx.fillText("@frahrdi", targetWidth - 10, menuHeight - 10);
+            
+            // Reset shadow so it doesn't affect further operations
+            menuCtx.shadowColor = "transparent";
+            menuCtx.shadowBlur = 0;
+            menuCtx.shadowOffsetX = 0;
+            menuCtx.shadowOffsetY = 0;
+        }
         
         const getBlob = (cvs) => new Promise(res => cvs.toBlob(res, 'image/png'));
         const camoPngBlob = await getBlob(canvas);
-        const menuPngBlob = await getBlob(menuCanvas);
+        const menuPngBlob = generateMenu ? await getBlob(menuCanvas) : null;
         
         const getIwi = async (pngBlob, width, height) => {
             const buf = new Uint8Array(await pngBlob.arrayBuffer());
@@ -323,24 +340,31 @@ convertBtn.addEventListener('click', async () => {
             });
         };
         
-        updateProgress(70, "Compressing IWI 400x400...");
-        const camoIwiBytes = await getIwi(camoPngBlob, 400, 400);
+        updateProgress(70, "Compressing IWI...");
+        const camoIwiBytes = await getIwi(camoPngBlob, targetWidth, targetHeight);
         
-        updateProgress(80, "Compressing IWI Menu...");
-        const menuIwiBytes = await getIwi(menuPngBlob, 400, 152);
-        
-        updateProgress(90, "Packaging ZIP...");
-        const zip = new JSZip();
-        
-        // Generate base name
         const baseName = currentFile.name.split('.')[0];
         const selectedCamo = camoNameSelect ? camoNameSelect.value : 'arctic';
         
-        zip.file(`weapon_camo_${selectedCamo}.iwi`, camoIwiBytes);
-        zip.file(`weapon_camo_menu_${selectedCamo}.iwi`, menuIwiBytes);
-        
-        outBlob = await zip.generateAsync({ type: 'blob' });
-        outFilename = `${baseName}_camo_pack.zip`;
+        if (generateMenu) {
+            updateProgress(80, "Compressing IWI Menu...");
+            const menuIwiBytes = await getIwi(menuPngBlob, targetWidth, menuHeight);
+            
+            updateProgress(90, "Packaging ZIP...");
+            const zip = new JSZip();
+            
+            zip.file(`weapon_camo_${selectedCamo}.iwi`, camoIwiBytes);
+            zip.file(`weapon_camo_menu_${selectedCamo}.iwi`, menuIwiBytes);
+            
+            outBlob = await zip.generateAsync({ type: 'blob' });
+            outFilename = `${baseName}_camo_pack.zip`;
+            
+            downloadBtn.innerHTML = `DOWNLOAD ZIP PACKAGE\n<div class="btn-shine"></div>`;
+        } else {
+            outBlob = new Blob([camoIwiBytes], { type: 'application/octet-stream' });
+            outFilename = `weapon_camo_${selectedCamo}.iwi`;
+            downloadBtn.innerHTML = `DOWNLOAD .IWI FILE\n<div class="btn-shine"></div>`;
+        }
         
         resultFilename.textContent = outFilename;
         resultSize.textContent = `${(outBlob.size / 1024).toFixed(1)} KB`;

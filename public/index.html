@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="it">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,7 +17,7 @@
     <div class="glass-container">
         <header>
             <h1>IW4X <span class="accent-text">CAMO</span></h1>
-            <p class="subtitle">Converti istantaneamente le tue immagini nel formato <br> <strong>IWI Version 8</strong> per Modern Warfare 2.</p>
+            <p class="subtitle">Instantly convert your images to <br> <strong>IWI Version 8</strong> format for Modern Warfare 2.</p>
         </header>
 
         <main>
@@ -52,7 +52,7 @@
                     </div>
                 </div>
                 <div class="options-group" id="camo-name-selection">
-                    <label for="camo-name-select" class="dropdown-label">Nome Custom Camo:</label>
+                    <label for="camo-name-select" class="dropdown-label">Custom Camo Name:</label>
                     <div class="select-wrapper">
                         <select id="camo-name-select" class="camo-dropdown">
                             <option value="desert">desert</option>
@@ -64,6 +64,17 @@
                             <option value="red_tiger">red_tiger</option>
                             <option value="orange_fall">orange_fall</option>
                         </select>
+                    </div>
+                    
+                    <div class="switches-container">
+                        <label class="switch-label">
+                            <input type="checkbox" id="generate-menu-checkbox" checked>
+                            Generate _menu file
+                        </label>
+                        <label class="switch-label">
+                            <input type="checkbox" id="max-res-checkbox">
+                            Max Resolution (No Crop)
+                        </label>
                     </div>
                 </div>
                 
@@ -145,9 +156,7 @@
             </div>
         </main>
 
-        <footer>
-            <p>Native Browser Conversion via <strong>MagickWasm</strong></p>
-        </footer>
+
     </div>
 
     <!-- Script Application -->
