@@ -26,12 +26,13 @@ const dropHint = document.querySelector('.formats-hint');
 const resultFilename = document.getElementById('result-filename');
 const resultSize = document.getElementById('result-size');
 
-// New Elements
 const progressBar = document.getElementById('progress-bar');
 const progressText = document.getElementById('progress-text');
 const errorOverlay = document.getElementById('error-overlay');
 const errorMsg = document.getElementById('error-msg');
 const errorClose = document.getElementById('error-close');
+const camoNameSelect = document.getElementById('camo-name-select');
+const camoNameSelectionGroup = document.getElementById('camo-name-selection');
 
 let currentFile = null;
 let outBlob = null; // Can be a zip blob or png blob depending on op
@@ -89,6 +90,7 @@ modeCreate.addEventListener('click', () => {
     fileInput.accept = 'image/*';
     dropText.innerHTML = `Drag your image or <span class="highlight">browse</span>`;
     dropHint.textContent = 'PNG • JPG • WEBP • BMP';
+    if(camoNameSelectionGroup) camoNameSelectionGroup.classList.remove('hidden');
     resetUI();
 });
 
@@ -99,6 +101,7 @@ modeExtract.addEventListener('click', () => {
     fileInput.accept = '.iwi';
     dropText.innerHTML = `Drag your .IWI file or <span class="highlight">browse</span>`;
     dropHint.textContent = 'IWI VERSION 8 FILES';
+    if(camoNameSelectionGroup) camoNameSelectionGroup.classList.add('hidden');
     resetUI();
 });
 
@@ -124,6 +127,7 @@ function handleFile(file) {
     if (isIwi) {
         convertBtn.classList.add('hidden');
         extractBtn.classList.remove('hidden');
+        if(camoNameSelectionGroup) camoNameSelectionGroup.classList.add('hidden');
         imagePreview.src = 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" fill="%234ade80" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>';
         fileResLabel.textContent = "IWI Texture";
         dropZone.classList.add('hidden');
@@ -131,6 +135,7 @@ function handleFile(file) {
     } else if (file.type.startsWith('image/')) {
         convertBtn.classList.remove('hidden');
         extractBtn.classList.add('hidden');
+        if(camoNameSelectionGroup) camoNameSelectionGroup.classList.remove('hidden');
         const reader = new FileReader();
         reader.onload = (e) => {
             imagePreview.src = e.target.result;
@@ -258,20 +263,26 @@ convertBtn.addEventListener('click', async () => {
         const topY = (400 - 152) / 2;
         menuCtx.drawImage(canvas, 0, topY, 400, 152, 0, 0, 400, 152);
         
-        // Draw squares border (BO2 style)
-        const sqSize = 4;
-        for (let y = 0; y < 152; y += sqSize) {
-            for (let x = 0; x < 400; x += sqSize) {
-                if (y < sqSize * 2 || y >= 152 - sqSize * 2 || x < sqSize * 2 || x >= 400 - sqSize * 2) {
-                    if (((x / sqSize) + (y / sqSize)) % 2 === 0) {
-                        menuCtx.fillStyle = 'rgba(0, 0, 0, 0.6)';
-                    } else {
-                        menuCtx.fillStyle = 'rgba(255, 255, 255, 0.2)';
-                    }
-                    menuCtx.fillRect(x, y, sqSize, sqSize);
-                }
-            }
-        }
+        // Setup Instagram watermark
+        menuCtx.font = "bold 20px 'Inter', sans-serif";
+        menuCtx.fillStyle = "rgba(255, 255, 255, 0.7)";
+        menuCtx.textAlign = "right";
+        menuCtx.textBaseline = "bottom";
+        
+        // Add shadow for better readability
+        menuCtx.shadowColor = "rgba(0, 0, 0, 0.8)";
+        menuCtx.shadowBlur = 4;
+        menuCtx.shadowOffsetX = 1;
+        menuCtx.shadowOffsetY = 1;
+        
+        // Draw watermark at bottom right with padding
+        menuCtx.fillText("@frahrdi", 390, 142);
+        
+        // Reset shadow so it doesn't affect further operations
+        menuCtx.shadowColor = "transparent";
+        menuCtx.shadowBlur = 0;
+        menuCtx.shadowOffsetX = 0;
+        menuCtx.shadowOffsetY = 0;
         
         const getBlob = (cvs) => new Promise(res => cvs.toBlob(res, 'image/png'));
         const camoPngBlob = await getBlob(canvas);
@@ -323,10 +334,10 @@ convertBtn.addEventListener('click', async () => {
         
         // Generate base name
         const baseName = currentFile.name.split('.')[0];
+        const selectedCamo = camoNameSelect ? camoNameSelect.value : 'arctic';
         
-        zip.file(`weapon_camo_arctic.iwi`, camoIwiBytes);
-        zip.file(`weapon_camo_menu_arctic.png`, await menuPngBlob.arrayBuffer());
-        zip.file(`weapon_camo_menu_arctic.iwi`, menuIwiBytes);
+        zip.file(`weapon_camo_${selectedCamo}.iwi`, camoIwiBytes);
+        zip.file(`weapon_camo_menu_${selectedCamo}.iwi`, menuIwiBytes);
         
         outBlob = await zip.generateAsync({ type: 'blob' });
         outFilename = `${baseName}_camo_pack.zip`;
