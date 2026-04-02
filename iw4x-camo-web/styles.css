@@ -149,6 +149,36 @@ header h1 {
     gap: 20px;
 }
 
+/* Tabs Mode Switch */
+.mode-switch {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+    background: rgba(255,255,255,0.02);
+    padding: 5px;
+    border-radius: 12px;
+    border: 1px solid var(--glass-border);
+}
+
+.mode-btn {
+    flex: 1;
+    padding: 12px 20px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    color: var(--text-dim);
+    font-family: 'Orbitron', sans-serif;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.mode-btn.active {
+    background: rgba(255,255,255,0.08);
+    color: var(--text-main);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
 .icon-pulse {
     position: relative;
 }
