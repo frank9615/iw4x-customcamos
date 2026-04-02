@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IW4X Camo Converter | Premium Modding Tool</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800;900&family=Inter:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <!-- Main Styles -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="glass-container">
+        <header>
+            <h1>IW4X <span class="accent-text">CAMO</span></h1>
+            <p class="subtitle">Converti istantaneamente le tue immagini nel formato <br> <strong>IWI Version 8</strong> per Modern Warfare 2.</p>
+        </header>
+
+        <main>
+            <!-- Stage 1: Upload -->
+            <div id="drop-zone" class="drop-zone">
+                <div class="drop-zone-content">
+                    <div class="icon-pulse">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="upload-icon">
+                            <path d="M12 2v12m0 0l-4-4m4 4l4-4"></path>
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        </svg>
+                    </div>
+                    <p>Trascina la tua immagine o <span class="highlight">sfoglia</span></p>
+                    <span class="formats-hint">PNG • JPG • WEBP • BMP</span>
+                </div>
+                <input type="file" id="file-input" hidden accept="image/*">
+            </div>
+
+            <!-- Stage 2: Preview & Convert -->
+            <div id="preview-section" class="preview-section hidden">
+                <div class="preview-card">
+                    <img id="image-preview" src="" alt="Camo Preview">
+                    <div class="image-info">
+                        <span id="file-name" class="file-name">texture_gold.png</span>
+                        <span id="file-res" class="file-res">1024x1024</span>
+                    </div>
+                </div>
+                
+                <div class="controls">
+                    <button id="convert-btn" class="glow-btn">
+                        GENERA FILE .IWI
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stage 3: Loading -->
+            <div id="status-section" class="status-section hidden">
+                <div class="loader-container">
+                    <div class="loader"></div>
+                    <p id="status-msg">Preparazione Motore WASM...</p>
+                    <div class="progress-container">
+                        <div id="progress-bar" class="progress-bar"></div>
+                    </div>
+                    <span id="progress-text" class="progress-text">0%</span>
+                </div>
+            </div>
+
+            <!-- Error Overlay -->
+            <div id="error-overlay" class="error-overlay hidden">
+                <div class="error-box">
+                    <div class="error-icon">!</div>
+                    <h3>SYSTEM FAILURE</h3>
+                    <p id="error-msg">Errore sconosciuto.</p>
+                    <button id="error-close" class="outline-btn">REBOOT SYSTEM</button>
+                </div>
+            </div>
+            
+            <!-- Stage 4: Success & Download -->
+            <div id="download-section" class="download-section hidden">
+                <div class="success-header">
+                    <div class="success-check">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                    </div>
+                    <h3>MISSION ACCOMPLISHED</h3>
+                </div>
+
+                <div class="result-card">
+                    <div class="file-icon-box">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                            <line x1="16" y1="13" x2="8" y2="13"></line>
+                            <line x1="16" y1="17" x2="8" y2="17"></line>
+                            <polyline points="10 9 9 9 8 9"></polyline>
+                        </svg>
+                    </div>
+                    <div class="file-details">
+                        <span id="result-filename" class="result-filename">weapon_camo_gold.iwi</span>
+                        <div class="result-meta">
+                            <span id="result-size" class="result-size">1.4 MB</span>
+                            <span class="status-badge">PRONTO AL DEPLOY</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="instruction-box">
+                    <span class="label">DESTINAZIONE:</span>
+                    <div class="path-display">
+                        <code>iw4x-folder / userraw / <span class="highlight">images</span> /</code>
+                    </div>
+                </div>
+                
+                <div class="download-actions">
+                    <button id="download-btn" class="glow-btn success">
+                        SCARICA .IWI
+                        <div class="btn-shine"></div>
+                    </button>
+                    <button id="reset-btn" class="outline-btn">NUOVA CAMO</button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>Native Browser Conversion via <strong>MagickWasm</strong></p>
+        </footer>
+    </div>
+
+    <!-- Script Application -->
+    <script type="module" src="app.js"></script>
+</body>
+</html>

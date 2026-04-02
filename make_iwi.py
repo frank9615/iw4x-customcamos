@@ -27,14 +27,16 @@ def create_iwi_header(width, height, format_type='dxt5'):
 def run_magick(input_image, dds_output):
     """
     Uses ImageMagick to convert an image to DDS.
+    Checks for 'magick' command.
     """
+    # On Windows, we might need to check if 'magick' exists
+    magick_cmd = "magick"
+    
     try:
-        # We use -define dds:compression=dxt5 to ensure correct format
-        # We also force it to be a 2D texture
         cmd = [
-            "magick", input_image, 
+            magick_cmd, input_image, 
             "-define", "dds:compression=dxt5", 
-            "-define", "dds:mipmaps=1", # Include mipmaps for better in-game rendering
+            "-define", "dds:mipmaps=1",
             dds_output
         ]
         subprocess.run(cmd, check=True, capture_output=True)
@@ -43,7 +45,9 @@ def run_magick(input_image, dds_output):
         print(f"Error running ImageMagick: {e.stderr.decode()}")
         return False
     except FileNotFoundError:
-        print("Error: ImageMagick (magick) not found in PATH.")
+        print("Error: ImageMagick ('magick') not found.")
+        print("Download it from: https://imagemagick.org/script/download.php")
+        print("IMPORTANT: On Windows, check 'Add application directory to your system PATH' during install.")
         return False
 
 def make_iwi(input_image, output_iwi):

@@ -40,6 +40,13 @@ Lo script si occupa di:
     - Comando: `magick input.png -define dds:compression=dxt5 output.dds`
 3.  **IWI Wrap**: Script Python (`convert_to_iwi.py`) per aggiungere l'header IWI v8.
 
+## Windows Setup
+
+Se sei su Windows, segui questi passi:
+1.  **Installa Python 3**: Dal [sito ufficiale](https://www.python.org/downloads/) o dal Microsoft Store.
+2.  **Installa ImageMagick**: Da [qui](https://imagemagick.org/script/download.php). **IMPORTANTE**: Durante l'installazione, spunta la casella **"Add application directory to your system PATH"**.
+3.  **Apri il Terminale**: Usa `PowerShell` o `cmd` nella cartella dei tuoi file e lancia lo script normalmente.
+
 ## How to use the Camo
 
 1.  **Locate IW4X Folder**: Vai nella cartella di installazione di IW4X.
