@@ -1,44 +1,46 @@
 # IW4x Custom Camo Studio
 
-Benvenuto nello strumento definitivo per la creazione ed estrazione di mimetiche personalizzate per Modern Warfare 2 (IW4x).
+Welcome to the ultimate tool for creating and extracting custom camouflages for Modern Warfare 2 (IW4x).
 
-![Anteprima Web App](image.png)
+**[Launch Web App (GitHub Pages)](https://frank9615.github.io/iw4x-customcamos/)**
 
-## Struttura del Progetto
+![Web App Preview](image.png)
 
-Di seguito viene illustrata l'organizzazione delle cartelle di questa repository:
+## Project Structure
 
-- **`iw4x-camo-web/`**: 
-  Il cuore del progetto. Contiene l'applicazione Web (HTML/JS/CSS) che effettua tutte le conversioni `.png` -> `.iwi` e l'estrazione inversa `.iwi` -> `.png` direttamente nel tuo browser, sfruttando *WebAssembly* (ImageMagick). 
+Below is the folder organization of this repository:
+
+- **`public/`**: 
+  The core of the project. Contains the Web application (HTML/JS/CSS) that performs all `.png` -> `.iwi` conversions and the reverse `.iwi` -> `.png` extraction directly in your browser, leveraging *WebAssembly* (ImageMagick). 
   
-- **`src/`**: 
-  Tool Python da terminale che permettono di manipolare o creare file `.iwi` e `.dds` *offline*. Utile se vuoi farti degli script di CI/CD auto-convertenti o se preferisci operare a riga di comando.
+- **`cli_tools/`**: 
+  Command-line Python tools that allow you to manipulate or create `.iwi` and `.dds` files *offline*. Useful if you want to create auto-converting CI/CD scripts or if you prefer to operate via command line.
 
 - **`test/`**: 
-  Contiene l'ambiente di test (principalmente algoritmi in Python per ridimensionare la pixel box a 400x400 e testare la maschera menu in formato Black Ops 2) per poi riversare la geometria vincente dentro il Javascript.
+  Contains the testing environment (primarily Python scripts to resize images to 400x400 and test the menu mask in Black Ops 2 format) to then implement the winning logic into Javascript.
 
-- **`iw_07/` e `other-camos/`**:
-  Le cartelle contenenti i file `.iwi` e `.dds` originali di gioco estratti dalle ISO vanilla di Call of Duty, essenziali come metro di paragone bit-a-bit e asset prototipi.
+- **`iw_07/` and `other-camos/`**:
+  Folders containing the original game `.iwi` and `.dds` files extracted from vanilla Call of Duty ISOs, essential as a bit-by-bit baseline and prototype assets.
 
-## Come Avviare l'Applicazione Web
+## How to Run the Web App Locally
 
-L'applicazione web è pensata per essere *client-side zero-knowledge* (senza database né server in back-end necessari), ma poiché esegue dei moduli WebAssembly (il modulo WASM di ImageMagick) è necessario avviarla da un **server HTTP locale** a causa delle policy CORS dei browser moderni.
+The web application is designed to be *client-side zero-knowledge* (no backend server or database required), but since it runs WebAssembly modules (ImageMagick WASM), it needs to be launched from a **local HTTP server** due to modern browsers' CORS policies.
 
-Hai due opzioni semplici:
+If you don't want to use the [GitHub Pages Version](https://frank9615.github.io/iw4x-customcamos/), you have two simple options to run it locally:
 
-### Metodo 1: VSCode (Consigliato)
-Se apri questo progetto sfruttando l'editor Visual Studio Code:
-1. Installa l'estensione **Live Server**.
-2. Fai click col tasto destro sul file `iw4x-camo-web/index.html`.
-3. Seleziona **"Open with Live Server"**. Il browser si aprirà magicamente sulla suite.
+### Method 1: VSCode (Recommended)
+If you open this project using Visual Studio Code:
+1. Install the **Live Server** extension.
+2. Right-click on the `src/index.html` file.
+3. Select **"Open with Live Server"**. The browser will magically open the suite.
 
-### Metodo 2: Python HTTP Server (Da Terminale)
-Se hai Python già installato e sei all'interno della cartella nativa, vai nella directory dell'app ed esegui i comandi:
+### Method 2: Python HTTP Server (From Terminal)
+If you already have Python installed and are in the native folder, go to the app directory and run:
 
 ```bash
-cd iw4x-camo-web
+cd public
 python -m http.server 8000
 ```
-Dopodiché apri il tuo browser preferito e vai all'indirizzo **`http://localhost:8000`**.
+Then open your favorite browser and go to **`http://localhost:8000`**.
 
-Riferisciti al file `CAMO_GUIDE.md` per i dettagli tecnici precisi sui bit di compressione DXT1/DXT5 del formato `IWi\x08`.
+Refer to the `CAMO_GUIDE.md` file for precise technical details on DXT1/DXT5 compression bits of the `IWi\x08` format.

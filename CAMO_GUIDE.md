@@ -11,42 +11,43 @@ Through reverse engineering of the community tools, the IWI v8 header was found 
 | Offset | Size | Name | Description |
 | :--- | :--- | :--- | :--- |
 | 0 | 4 | Magic | `IWi\x08` (hex: 49 57 69 08) |
-| 4 | 4 | Flags | Valori operativi (es. `371` o `0x0173` per DXT5) |
-| 8 | 2 | Format | ID Formato (`11` o `0x0B` per DXT1, `13` o `0x0D` per DXT5) |
+| 4 | 4 | Flags | Operational values (e.g. `371` or `0x0173` for DXT5) |
+| 8 | 2 | Format | Format ID (`11` or `0x0B` for DXT1, `13` or `0x0D` for DXT5) |
 | 10 | 2 | Width | Texture width (little-endian uint16) |
 | 12 | 2 | Height | Texture height (little-endian uint16) |
-| 14 | 2 | Depth | Tipicamente `1` per le mimetiche |
-| 16 | 16 | MipOff | 4 valori interi a 32-bit (offset). Puntano all'EOF se senza mipmaps |
+| 14 | 2 | Depth | Typically `1` for camouflages |
+| 16 | 16 | MipOff | 4 32-bit integer values (offsets). Points to EOF if no mipmaps |
 
 ### Texture Compression
 The game prefers **DXT** (S3TC) compression for performance. We used **DXT5** for this camo to support potential transparency and higher detail, although DXT1 is also common for simple textures.
 
 ## The Automated Workflow (Recommended)
 
-Ho creato uno script unico che automatizza tutto il processo (ImageMagick + Python):
+I have created a single script that automates the whole process (ImageMagick + Python):
 
 ```bash
-python3 make_iwi.py <immagine_input> <file_output.iwi>
+cd cli_tools
+python make_iwi.py <input_image> <output_file.iwi>
 ```
 
-Lo script si occupa di:
-1.  **DDS Conversion**: Usa `magick` per convertire la tua immagine in DDS con compressione DXT5 e generazione di mipmap.
-2.  **IWI v8 Header**: Estrae i pixel e inserisce l'header `iwi8` corretto.
-3.  **Cleanup**: Rimuove i file temporanei.
+The script handles:
+1.  **DDS Conversion**: Uses `magick` to convert your image to DDS with DXT5 compression and mipmap generation.
+2.  **IWI v8 Header**: Extracts the pixels and inserts the correct `iwi8` header.
+3.  **Cleanup**: Removes temporary files.
 
-## Hand-made Workflow (Per riferimento)
+## Hand-made Workflow (For reference)
 
-1.  **AI Generation**: Generazione di un pattern seamless 1024x1024.
-2.  **DDS Conversion**: Uso di ImageMagick (`magick`) per la compressione.
-    - Comando: `magick input.png -define dds:compression=dxt5 output.dds`
-3.  **IWI Wrap**: Script Python (`convert_to_iwi.py`) per aggiungere l'header IWI v8.
+1.  **AI Generation**: Generates a seamless 1024x1024 pattern.
+2.  **DDS Conversion**: Uses ImageMagick (`magick`) for compression.
+    - Command: `magick input.png -define dds:compression=dxt5 output.dds`
+3.  **IWI Wrap**: Python script (`convert_to_iwi.py`) to add the IWI v8 header.
 
 ## Windows Setup
 
-Se sei su Windows, segui questi passi:
-1.  **Installa Python 3**: Dal [sito ufficiale](https://www.python.org/downloads/) o dal Microsoft Store.
-2.  **Installa ImageMagick**: Da [qui](https://imagemagick.org/script/download.php). **IMPORTANTE**: Durante l'installazione, spunta la casella **"Add application directory to your system PATH"**.
-3.  **Apri il Terminale**: Usa `PowerShell` o `cmd` nella cartella dei tuoi file e lancia lo script normalmente.
+If you are on Windows, follow these steps:
+1.  **Install Python 3**: From the [official website](https://www.python.org/downloads/) or the Microsoft Store.
+2.  **Install ImageMagick**: From [here](https://imagemagick.org/script/download.php). **IMPORTANT**: During installation, check the box **"Add application directory to your system PATH"**.
+3.  **Open the Terminal**: Use `PowerShell` or `cmd` in your files directory and run the script normally.
 
 ## How to use the Camo
 

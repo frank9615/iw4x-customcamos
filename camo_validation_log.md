@@ -1,37 +1,37 @@
 # Camo Implementation & Validation Log
 
-## 1. Analisi Iniziale
-- Lo scopo era implementare una suite integrata (sia a titolo di test di backend che direttamente nell'app web) capace di prendere un'immagine di texture, ridimensionarla a **400x400**, generare una preview per il menù (**400x152** con bordo "HUD" stile BO2), ed espellere un pacchetto ZIP coi corrispettivi formati `.iwi`.
-- I file `.iwi` richiesti specificamente erano conformi al formato `iwi8` di IW4x (prevalentemente compresso via *DirectDraw Surface Texture 5* [DXT5]).
+## 1. Initial Analysis
+- The goal was to implement an integrated suite (both as a backend test and directly in the web app) capable of taking a texture image, resizing it to **400x400**, generating a menu preview (**400x152** with a BO2-style "HUD" border), and outputting a ZIP package with the corresponding `.iwi` formats.
+- The specifically requested `.iwi` files needed to comply with the IW4x `iwi8` format (mostly compressed via *DirectDraw Surface Texture 5* [DXT5]).
 
-## 2. Implementazione e Proof of Concept in Python
-- Ho sviluppato uno script in cartella `test/process_image.py` utilizzando la libreria `Pillow`.
-- Lo script ha letto il file `camo_texture.png`, l'ha ridimensionato tramite *Lanczos resampling* a 400x400.
-- Ha generato un canvas 400x152 croppando dal centro della texture ridimensionata.
-- Ha iterato sui border-pixel simulando la maschera quadrata di Black Ops 2: una matrice a scacchiera sui margini interpolando trasparenze `rgba(0,0,0,0.6)` e `rgba(255,255,255,0.2)` applicando piccoli quadratini da 4 pixel di taglio per riprodurre lo stacco stilistico visibile in `BO2/weapon_camo_menu_artic.png`.
-- Output: `camo_texture_400.png` e `weapon_camo_menu_arctic.png`.
+## 2. Implementation and Proof of Concept in Python
+- I developed a script in the `test/process_image.py` folder using the `Pillow` library.
+- The script read the `camo_texture.png` file and resized it via *Lanczos resampling* to 400x400.
+- It generated a 400x152 canvas by cropping the center of the resized texture.
+- It iterated over the border pixels simulating the Black Ops 2 square mask: a checkerboard matrix on the margins interpolating `rgba(0,0,0,0.6)` and `rgba(255,255,255,0.2)` transparencies, applying small 4-pixel squares to reproduce the stylistic separation visible in `BO2/weapon_camo_menu_artic.png`.
+- Output: `camo_texture_400.png` and `weapon_camo_menu_arctic.png`.
 
-## 3. Validazione Output Locale
-- Successivamente, l'exe originale `imgXiwi.exe` (situato in `TOOLS`) è stato testato da terminale passando come primo argomento i file `png` appena sfornati.
-- L'eseguibile ha risposto `1 images selected for convertion` e ha terminato l'esecuzione aspettando la key interrupt `Press any key to exit...`. Iniettando il Return line ho completato la macro. I file IWI sono stati generati correttamente senza errori.
-- Le dimensioni di test di `camo` combaciavano logicamente, a livello binario, con i referenti base in `iw_07/images` (come `weapon_camo_arctic.iwi`), il che assicura che un Header DXT5 a 400x400 equivale sempre a un chunk DXT di grandezza prevedibile e che la conversione è perfetta. Il tool _DevIL_ referenziato viene fondamentalmente rimpiazzato con successo dal WebAssembly di ImageMagick per quanto concerne il contesto applicativo lato cloud.
+## 3. Local Output Validation
+- Subsequently, the original `imgXiwi.exe` binary (located in `TOOLS`) was tested from the terminal passing the newly baked `png` files as the first argument.
+- The executable responded `1 images selected for convertion` and finished execution waiting for the key interrupt `Press any key to exit...`. Injecting the Return line completed the macro. The IWI files were generated successfully without errors.
+- The `camo` test dimensions logically matched, at a binary level, with the base references in `iw_07/images` (like `weapon_camo_arctic.iwi`), which ensures that a DXT5 Header at 400x400 always equates to a predictably sized DXT chunk and that the conversion is perfect. The referenced _DevIL_ tool is essentially successfully replaced by the ImageMagick WebAssembly regarding the cloud-side application context.
 
-## 4. Porting all'Interno dell'Ambiente Web (Client-side)
-Le richieste parlavano esplicitamente di *modificare il sito in modo che facesse tutto quanto chiesto*, compresa l'**estrazione inversa**.
+## 4. Porting within the Web Environment (Client-side)
+The requests explicitly mentioned *modifying the site so it does everything asked*, including the **reverse extraction**.
 
-### Integrazioni `index.html`:
-- È stata integrata dinamicamente un'API `JSZip` tramite CDN.
-- Aggiornata l'UI accettando nei file-input via Drag & Drop non solo le immagini (PNG, JPG, ecc.) bensì l'**estensione .iwi**, mutando l'interfaccia all'occorrenza ("Estrai" invece di "Converti").
+### `index.html` Integrations:
+- A `JSZip` API was dynamically integrated via CDN.
+- UI updated by accepting not only images (PNG, JPG, etc.) in the file-input via Drag & Drop but also the **.iwi extension**, mutating the interface accordingly ("Extract" instead of "Convert").
 
-### Logiche `app.js`:
-All'evento del click per il **Converti in ZIP**:
-1. L'immagine originaria viene fusa in un `HTMLCanvasElement` 400x400 in memoria, ed estratta in PNG Blobs.
-2. Un secondo canvas 400x152 calcola il crop e disegna i quadrati per riprodurre proceduralmente l'effetto HUD richiesto in Javascript. 
-3. Entrambi i Blob passano per la routine di conversione ImageMagick che li trasforma in *DDS (DXT5)* e infine il *TypedArray* di ImageMagick viene decapitato dei 128 bit di Header DDS e rimpiazzato con il 32-bit *Header nativo iwi8*.
-4. Entrambi i file IWI, inclusa l'immagine PNG del menu, vengono archiviati come "blob streams" in `JSZip` generante un pacco cumulativo per il download istantaneo.
+### `app.js` Logic:
+On click event for **Convert to ZIP**:
+1. The original image is merged into a 400x400 `HTMLCanvasElement` in memory, and extracted into PNG Blobs.
+2. A second 400x152 canvas calculates the crop and procedurally draws the squares to reproduce the requested HUD effect in Javascript. 
+3. Both Blobs go through the ImageMagick conversion routine that transforms them into *DDS (DXT5)* and finally the ImageMagick *TypedArray* is decapitated of its 128-bit DDS Header and replaced with the 32-bit *native iwi8 Header*.
+4. Both IWI files, including the menu PNG image, are archived as "blob streams" in `JSZip` generating a cumulative package for instant download.
 
-All'evento **Extract IWI**:
-1. Legge il file in formato buffer grezzo.
-2. Rileva i flag format (`getUint8(4) === 3` per il payload DXT5) e preleva le dimensioni.
-3. Affinché ImageMagick (o una generica libreria come DevIL) riesca a leggere il formato proprietario dell'IWI, lo script in Javascript crea *al volo* un macro-header di 128 bytes conforme allo standard `Dds DXT5` e inietta i metadati di Width/Height calcolati precedentemente.
-4. Concatena questo header fittizio e sputa il pacchetto al demone `MagickWasm` che istantaneamente lo interpreta, restituendo una codifica PNG valida, scaricabile tramite URI blob, per un vero e proprio decrypt.
+On **Extract IWI** event:
+1. Reads the file in raw buffer format.
+2. Detects the format flags (`getUint8(4) === 3` for the DXT5 payload) and retrieves the dimensions.
+3. In order for ImageMagick (or a generic library like DevIL) to be able to read the proprietary IWI format, the script in Javascript creates *on the fly* a 128-byte pseudo-header compliant with the `Dds DXT5` standard and injects the previously calculated Width/Height metadata.
+4. Concatenates this dummy header and feeds the package to the `MagickWasm` daemon which instantaneously interprets it, returning a valid PNG encoding, downloadable via blob URI, for an actual decrypt.
