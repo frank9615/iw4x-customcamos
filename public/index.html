@@ -10,6 +10,16 @@
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800;900&family=Inter:wght@300;400;500;700;800&display=swap" rel="stylesheet">
     <!-- JSZip for exporting multiple files -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <!-- Three.js for 3D Preview -->
+    <script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
+    <script type="importmap">
+      {
+        "imports": {
+          "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+          "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+        }
+      }
+    </script>
     <!-- Main Styles -->
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -44,13 +54,18 @@
 
             <!-- Stage 2: Preview & Convert -->
             <div id="preview-section" class="preview-section hidden">
-                <div class="preview-card">
-                    <img id="image-preview" src="" alt="Camo Preview">
-                    <div class="image-info">
-                        <span id="file-name" class="file-name">texture_gold.png</span>
-                        <span id="file-res" class="file-res">1024x1024</span>
+                
+                <div class="preview-layout">
+                    <!-- 2D Image Info -->
+                    <div class="preview-card">
+                        <img id="image-preview" src="" alt="Camo Preview">
+                        <div class="image-info">
+                            <span id="file-name" class="file-name">texture_gold.png</span>
+                            <span id="file-res" class="file-res">1024x1024</span>
+                        </div>
                     </div>
                 </div>
+
                 <div class="options-group" id="camo-name-selection">
                     <label for="camo-name-select" class="dropdown-label">Custom Camo Name:</label>
                     <div class="select-wrapper">
@@ -157,6 +172,26 @@
         </main>
 
 
+    </div>
+
+    <!-- 3D FULLSCREEN VIEWER -->
+    <div id="viewer-3d-wrapper" class="viewer-3d-wrapper hidden">
+        <div class="viewer-overlay-controls">
+            <h3 class="viewer-title">LIVE ARMORY</h3>
+            <select id="model-select" class="camo-dropdown model-dropdown light-mode-dropdown">
+                <option value="placeholder">Placeholder (Assault Rifle)</option>
+                <option value="intervention" disabled>Intervention (Missing .glb)</option>
+            </select>
+        </div>
+        <div id="viewer-3d-container" class="viewer-3d-fullscreen">
+            <div class="viewer-loading" id="viewer-loading">
+                <div class="model-loader"></div>
+                <p id="viewer-loading-text">INIZIALIZZAZIONE MOTORE...</p>
+                <div class="viewer-progress-container">
+                    <div id="viewer-progress-fill" class="viewer-progress-fill"></div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <!-- Script Application -->

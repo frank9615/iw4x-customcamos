@@ -1,4 +1,5 @@
 import { initializeImageMagick, ImageMagick, MagickFormat } from 'https://cdn.jsdelivr.net/npm/@imagemagick/magick-wasm@0.0.38/dist/index.min.js';
+import { initViewer3D, updateCamoTexture } from './viewer3d.js';
 
 // DOM Elements
 const dropZone = document.getElementById('drop-zone');
@@ -38,6 +39,15 @@ let currentFile = null;
 let outBlob = null; // Can be a zip blob or png blob depending on op
 let outFilename = "";
 let initialized = false;
+let viewerInitialized = false;
+
+function showViewer() {
+    document.getElementById('viewer-3d-wrapper').classList.remove('hidden');
+    if (!viewerInitialized) {
+        initViewer3D('viewer-3d-container');
+        viewerInitialized = true;
+    }
+}
 
 // Progress Utils
 function updateProgress(percent, msg) {
@@ -132,6 +142,7 @@ function handleFile(file) {
         fileResLabel.textContent = "IWI Texture";
         dropZone.classList.add('hidden');
         previewSection.classList.remove('hidden');
+        showViewer();
     } else if (file.type.startsWith('image/')) {
         convertBtn.classList.remove('hidden');
         extractBtn.classList.add('hidden');
@@ -144,6 +155,10 @@ function handleFile(file) {
             img.src = e.target.result;
             dropZone.classList.add('hidden');
             previewSection.classList.remove('hidden');
+            showViewer();
+
+            // UPDATE 3D PREVIEW AFTER ENGINE IS INITIALIZED
+            updateCamoTexture(e.target.result);
         };
         reader.readAsDataURL(file);
     } else {
@@ -210,7 +225,10 @@ extractBtn.addEventListener('click', async () => {
                 resultSize.textContent = `${(outBlob.size / 1024).toFixed(1)} KB`;
                 
                 // Aggiorna l'anteprima a schermo
-                imagePreview.src = URL.createObjectURL(outBlob);
+                const ddsObjectUrl = URL.createObjectURL(outBlob);
+                imagePreview.src = ddsObjectUrl;
+                updateCamoTexture(ddsObjectUrl);
+                
                 fileResLabel.textContent = `${width}x${height}px`;
                 
                 updateProgress(100, "Decoding Complete!");
@@ -406,6 +424,7 @@ function resetUI() {
     updateProgress(0, "Ready.");
     dropZone.classList.remove('hidden');
     previewSection.classList.add('hidden');
+    document.getElementById('viewer-3d-wrapper').classList.add('hidden');
     statusSection.classList.add('hidden');
     downloadSection.classList.add('hidden');
     fileInput.value = '';
