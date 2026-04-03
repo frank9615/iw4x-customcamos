@@ -6,6 +6,10 @@ Welcome to the ultimate tool for creating and extracting custom camouflages for 
 
 ![Web App Preview](image.png)
 
+## Install camo: 
+- IW4x Directory -> userraw -> images *drag & drop*
+- IW4x Directory -> main -> IW_07 -> images *drag & drop*
+
 ## Project Structure
 
 Below is the folder organization of this repository:
@@ -17,9 +21,9 @@ Below is the folder organization of this repository:
   Command-line Python tools that allow you to manipulate or create `.iwi` and `.dds` files *offline*. Useful if you want to create auto-converting CI/CD scripts or if you prefer to operate via command line.
 
 - **`test/`**: 
-  Contains the testing environment (primarily Python scripts to resize images to 400x400 and test the menu mask in Black Ops 2 format) to then implement the winning logic into Javascript.
+  test files
 
-- **`iw_07/` and `other-camos/`**:
+- **`other-camos/`**:
   Folders containing the original game `.iwi` and `.dds` files extracted from vanilla Call of Duty ISOs, essential as a bit-by-bit baseline and prototype assets.
 
 ## How to Run the Web App Locally

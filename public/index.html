@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,7 +8,9 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800;900&family=Inter:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@800;900&family=Inter:wght@300;400;500;700;800&display=swap"
+        rel="stylesheet">
     <!-- JSZip for exporting multiple files -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
     <!-- Three.js for 3D Preview -->
@@ -23,11 +26,13 @@
     <!-- Main Styles -->
     <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
     <div class="glass-container">
         <header>
             <h1>IW4X <span class="accent-text">CAMO</span></h1>
-            <p class="subtitle">Instantly convert your images to <br> <strong>IWI Version 8</strong> format for Modern Warfare 2.</p>
+            <p class="subtitle">Instantly convert your images to <br> <strong>IWI Version 8</strong> format for Modern
+                Warfare 2.</p>
         </header>
 
         <main>
@@ -41,7 +46,8 @@
             <div id="drop-zone" class="drop-zone">
                 <div class="drop-zone-content">
                     <div class="icon-pulse">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="upload-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round" class="upload-icon">
                             <path d="M12 2v12m0 0l-4-4m4 4l4-4"></path>
                             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
                         </svg>
@@ -54,7 +60,7 @@
 
             <!-- Stage 2: Preview & Convert -->
             <div id="preview-section" class="preview-section hidden">
-                
+
                 <div class="preview-layout">
                     <!-- 2D Image Info -->
                     <div class="preview-card">
@@ -80,7 +86,7 @@
                             <option value="orange_fall">orange_fall</option>
                         </select>
                     </div>
-                    
+
                     <div class="switches-container">
                         <label class="switch-label">
                             <input type="checkbox" id="generate-menu-checkbox" checked>
@@ -92,12 +98,14 @@
                         </label>
                     </div>
                 </div>
-                
-                <div class="controls" style="display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 300px; margin: 0 auto;">
+
+                <div class="controls"
+                    style="display: flex; flex-direction: column; gap: 15px; width: 100%; max-width: 300px; margin: 0 auto;">
                     <button id="convert-btn" class="glow-btn" style="width: 100%;">
                         GENERATE .IWI FILES (ZIP)
                     </button>
-                    <button id="extract-btn" class="glow-btn hidden" style="background:var(--accent-green); box-shadow: 0 0 20px rgba(0,255,100,0.2); width: 100%;">
+                    <button id="extract-btn" class="glow-btn hidden"
+                        style="background:var(--accent-green); box-shadow: 0 0 20px rgba(0,255,100,0.2); width: 100%;">
                         EXTRACT IMAGE FROM .IWI
                     </button>
                     <button id="restart-preview-btn" class="outline-btn" style="width: 100%;">
@@ -127,12 +135,13 @@
                     <button id="error-close" class="outline-btn">REBOOT SYSTEM</button>
                 </div>
             </div>
-            
+
             <!-- Stage 4: Success & Download -->
             <div id="download-section" class="download-section hidden">
                 <div class="success-header">
                     <div class="success-check">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                            stroke-linecap="round" stroke-linejoin="round">
                             <polyline points="20 6 9 17 4 12"></polyline>
                         </svg>
                     </div>
@@ -141,7 +150,8 @@
 
                 <div class="result-card">
                     <div class="file-icon-box">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-green)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="var(--accent-green)" stroke-width="1.5"
+                            stroke-linecap="round" stroke-linejoin="round">
                             <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                             <polyline points="14 2 14 8 20 8"></polyline>
                             <line x1="16" y1="13" x2="8" y2="13"></line>
@@ -159,7 +169,7 @@
                 </div>
 
 
-                
+
                 <div class="download-actions">
                     <button id="download-btn" class="glow-btn success">
                         DOWNLOAD ZIP PACKAGE
@@ -184,16 +194,20 @@
             <div class="select-wrapper">
                 <select id="model-select" class="camo-dropdown model-dropdown light-mode-dropdown">
                     <option value="placeholder">Placeholder (Assault Rifle)</option>
-                    <option value="intervention" disabled>Intervention (Missing .glb)</option>
+                    <option value="intervention" selected>Intervention</option>
                 </select>
             </div>
         </div>
 
         <div class="viewer-overlay-right">
             <div class="studio-controls">
-                <div class="studio-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
-                    <span style="font-family:'Orbitron',sans-serif;font-size:0.75rem;color:var(--text-main);letter-spacing:1px;font-weight:bold;">STUDIO CONTROLS</span>
-                    <button id="reset-studio-btn" style="background:none;border:none;color:var(--accent-pink);font-family:'Orbitron',sans-serif;font-size:0.6rem;cursor:pointer;letter-spacing:1px;font-weight:700;">DEFAULT</button>
+                <div class="studio-header"
+                    style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+                    <span
+                        style="font-family:'Orbitron',sans-serif;font-size:0.75rem;color:var(--text-main);letter-spacing:1px;font-weight:bold;">STUDIO
+                        CONTROLS</span>
+                    <button id="reset-studio-btn"
+                        style="background:none;border:none;color:var(--accent-pink);font-family:'Orbitron',sans-serif;font-size:0.6rem;cursor:pointer;letter-spacing:1px;font-weight:700;">DEFAULT</button>
                 </div>
                 <div class="slider-group">
                     <label for="light-slider">
@@ -216,9 +230,11 @@
                     </label>
                     <input type="range" id="metalness-slider" min="0" max="1" step="0.05" value="0.6">
                 </div>
-                
-                <div class="disclaimer-note" style="margin-top: 10px; font-size: 0.65rem; color: var(--text-dim); text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; line-height: 1.4;">
-                    <strong style="color: var(--accent-pink);">NOTE:</strong> Graphical rendering is simulated. In-game lighting and materials on IW4x may differ based on map environment.
+
+                <div class="disclaimer-note"
+                    style="margin-top: 10px; font-size: 0.65rem; color: var(--text-dim); text-align: center; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 10px; line-height: 1.4;">
+                    <strong style="color: var(--accent-pink);">NOTE:</strong> Graphical rendering is simulated. In-game
+                    lighting and materials on IW4x may differ based on map environment.
                 </div>
             </div>
         </div>
@@ -236,4 +252,5 @@
     <!-- Script Application -->
     <script type="module" src="app.js"></script>
 </body>
+
 </html>
