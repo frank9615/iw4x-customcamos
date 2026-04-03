@@ -158,7 +158,7 @@ function loadWeaponModel(type) {
             const size = box.getSize(new THREE.Vector3());
             const maxDim = Math.max(size.x, size.y, size.z);
             if (maxDim > 0) {
-                const targetSize = 4.2; // Zoomed out for better view
+                const targetSize = 3.8; // Zoomed out slightly more
                 const scaleRatio = targetSize / maxDim;
                 currentWeaponGroup.scale.set(scaleRatio, scaleRatio, scaleRatio);
             }
@@ -171,14 +171,13 @@ function loadWeaponModel(type) {
             // Helper for determining if a material should receive camo and studio tweaks
             const isCamoTarget = (matName) => {
                 const name = matName.toLowerCase();
-                const blocked = ['lens', 'glass', 'scope', 'acog', 'laser', 'thermal', 'reticle', 'decal'];
+                const blocked = ['lens', 'glass', 'scope', 'acog', 'laser', 'thermal', 'reticle', 'decal', 'metal', 'base', 'black', 'dark'];
                 for (const b of blocked) {
                     if (name.includes(b)) return false;
                 }
                 return true; // We assume the main weapon base qualifies
             };
 
-            // Re-apply base material properties to fit our studio
             currentWeaponGroup.traverse((child) => {
                 if (child.isMesh && child.material) {
                     const mats = Array.isArray(child.material) ? child.material : [child.material];
@@ -187,7 +186,6 @@ function loadWeaponModel(type) {
                         
                         m.metalness = parseFloat(document.getElementById('metalness-slider')?.value || 0.6);
                         m.roughness = parseFloat(document.getElementById('roughness-slider')?.value || 0.4);
-                        m.color.setHex(0xffffff); // Force white base tint so the texture actually shows!
                         m.needsUpdate = true;
                     });
                 }
@@ -314,15 +312,18 @@ function actuallyApplyTexture(imageUrl, isReapply = false) {
 
         const isCamoTarget = (matName) => {
             const name = matName.toLowerCase();
-            const blocked = ['lens', 'glass', 'scope', 'acog', 'laser', 'thermal', 'reticle', 'decal'];
+            const blocked = ['lens', 'glass', 'scope', 'acog', 'laser', 'thermal', 'reticle', 'decal', 'metal', 'base', 'black', 'dark'];
             for (const b of blocked) {
                 if (name.includes(b)) return false;
             }
             return true;
         };
 
+        // Applicazione intelligente
         currentWeaponGroup.traverse((child) => {
             if (child.isMesh && child.material && !child.isDecoration) {
+                // If it's a model with specifically named sub-meshes that shouldn't get camo, we can block by child.name
+                // For Greyhound intervention, we usually rely on material names.
                 const mats = Array.isArray(child.material) ? child.material : [child.material];
                 mats.forEach(m => {
                     if (!isCamoTarget(m.name)) return;
@@ -341,16 +342,19 @@ function actuallyApplyTexture(imageUrl, isReapply = false) {
 
     const textureLoader = new THREE.TextureLoader();
     textureLoader.load(imageUrl, (texture) => {
-        // Models exported directly into .glb usually require flipY=false
-        texture.flipY = false;
         
-        // If it's the placeholder, we need repeat wrapping to tile it correctly because the UVs are flat.
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+
         const isPlaceholder = document.getElementById('model-select')?.value === 'placeholder';
         if (isPlaceholder) {
-            texture.wrapS = THREE.RepeatWrapping;
-            texture.wrapT = THREE.RepeatWrapping;
             texture.repeat.set(2, 0.5);
             texture.flipY = true;
+        } else {
+            // IWI camo patterns are tiled extensively across the weapon mesh UVs mapping.
+            // A 6x6 repeat correctly mimics the scaling of most Infinity Ward camo shaders!
+            texture.repeat.set(6, 6);
+            texture.flipY = false;
         }
 
         texture.colorSpace = THREE.SRGBColorSpace; // Keeps colors vivid
