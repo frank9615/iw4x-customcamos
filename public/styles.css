@@ -804,6 +804,26 @@ footer {
     letter-spacing: 2px;
 }
 
+.viewer-settings-btn {
+    border: 1px solid var(--glass-border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    background: rgba(0, 0, 0, 0.45);
+    color: var(--text-main);
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.viewer-settings-btn:hover {
+    border-color: var(--accent-green);
+    box-shadow: 0 0 14px rgba(0, 255, 136, 0.2);
+}
+
 .light-mode-dropdown {
     background: rgba(0,0,0,0.5);
     border: 1px solid var(--glass-border);
@@ -827,6 +847,10 @@ footer {
     flex-direction: column;
     gap: 12px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+}
+
+.studio-controls.hidden-panel {
+    display: none;
 }
 
 .slider-group {

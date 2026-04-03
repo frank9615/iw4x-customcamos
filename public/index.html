@@ -197,10 +197,11 @@
                     <option value="intervention" selected>Intervention</option>
                 </select>
             </div>
+            <button id="settings-toggle-btn" class="viewer-settings-btn" type="button">Settings</button>
         </div>
 
         <div class="viewer-overlay-right">
-            <div class="studio-controls">
+            <div id="studio-controls-panel" class="studio-controls hidden-panel">
                 <div class="studio-header"
                     style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
                     <span
@@ -229,6 +230,34 @@
                         <span id="metalness-val" style="color:var(--text-main);">0.60</span>
                     </label>
                     <input type="range" id="metalness-slider" min="0" max="1" step="0.05" value="0.6">
+                </div>
+                <div class="slider-group">
+                    <label for="background-select">
+                        <span>Background</span>
+                    </label>
+                    <select id="background-select" class="camo-dropdown light-mode-dropdown">
+                        <option value="studio_dark" selected>Studio Dark</option>
+                        <option value="sand">Desert Sand</option>
+                        <option value="snow">Snow Field</option>
+                        <option value="forest">Forest Fog</option>
+                        <option value="urban">Urban Concrete</option>
+                    </select>
+                </div>
+                <label class="switch-label" for="rotate-toggle">
+                    <input type="checkbox" id="rotate-toggle" checked>
+                    Weapon Auto-Rotate
+                </label>
+                <div class="slider-group">
+                    <label for="viewport-select">
+                        <span>Viewport</span>
+                    </label>
+                    <select id="viewport-select" class="camo-dropdown light-mode-dropdown">
+                        <option value="iso" selected>Isometric</option>
+                        <option value="front">Front</option>
+                        <option value="right">Right</option>
+                        <option value="left">Left</option>
+                        <option value="top">Top</option>
+                    </select>
                 </div>
 
                 <div class="disclaimer-note"
