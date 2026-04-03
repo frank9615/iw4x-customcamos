@@ -51,6 +51,47 @@ export function initViewer3D(containerId) {
     // Placeholder Mesh (A stylized "weapon" shape)
     createPlaceholderWeapon();
 
+    // Setup Studio Controls
+    const lightSlider = document.getElementById('light-slider');
+    const lightVal = document.getElementById('light-val');
+    if (lightSlider) {
+        lightSlider.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            renderer.toneMappingExposure = val;
+            if (lightVal) lightVal.textContent = val.toFixed(1);
+        });
+    }
+
+    const roughnessSlider = document.getElementById('roughness-slider');
+    const roughnessVal = document.getElementById('roughness-val');
+    if (roughnessSlider) {
+        roughnessSlider.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            if (weaponMesh && weaponMesh.material) weaponMesh.material.roughness = val;
+            if (roughnessVal) roughnessVal.textContent = val.toFixed(2);
+        });
+    }
+
+    const metalSlider = document.getElementById('metalness-slider');
+    const metalnessVal = document.getElementById('metalness-val');
+    if (metalSlider) {
+        metalSlider.addEventListener('input', (e) => {
+            const val = parseFloat(e.target.value);
+            if (weaponMesh && weaponMesh.material) weaponMesh.material.metalness = val;
+            if (metalnessVal) metalnessVal.textContent = val.toFixed(2);
+        });
+    }
+    
+    // Reset Studio Defaults
+    const resetStudioBtn = document.getElementById('reset-studio-btn');
+    if (resetStudioBtn) {
+        resetStudioBtn.addEventListener('click', () => {
+            if (lightSlider) { lightSlider.value = 1.2; lightSlider.dispatchEvent(new Event('input')); }
+            if (roughnessSlider) { roughnessSlider.value = 0.4; roughnessSlider.dispatchEvent(new Event('input')); }
+            if (metalSlider) { metalSlider.value = 0.6; metalSlider.dispatchEvent(new Event('input')); }
+        });
+    }
+
     // Handle Resize
     window.addEventListener('resize', () => {
         if (!container) return;
@@ -129,7 +170,7 @@ export function updateCamoTexture(imageUrl) {
 
     if (loadingElem && loadingFill && loadingText) {
         // Avvia caricamento fittizio per dare l'effetto premium
-        loadingText.textContent = "APPLICAZIONE MIMETICA IN CORSO...";
+        loadingText.textContent = "APPLYING MATERIAL...";
         loadingElem.style.display = 'flex';
         loadingFill.style.width = '0%';
         

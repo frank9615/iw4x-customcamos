@@ -417,6 +417,8 @@ downloadBtn.addEventListener('click', triggerDownload);
 downloadPngBtn.addEventListener('click', triggerDownload);
 
 resetBtn.addEventListener('click', resetUI);
+const restartPreviewBtn = document.getElementById('restart-preview-btn');
+if (restartPreviewBtn) restartPreviewBtn.addEventListener('click', resetUI);
 
 function resetUI() {
     currentFile = null;
