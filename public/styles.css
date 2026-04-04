@@ -627,7 +627,8 @@ main > * {
 
 /* Status & Loader */
 .loader-container {
-    padding: 40px;
+    padding: 32px 20px;
+    text-align: center;
 }
 
 .loader {
@@ -647,10 +648,13 @@ main > * {
 /* Progress Bar */
 .progress-container {
     width: 100%;
+    max-width: 520px;
     height: 10px;
     background: rgba(255, 255, 255, 0.05);
     border-radius: 5px;
     margin: 20px 0 10px;
+    margin-left: auto;
+    margin-right: auto;
     overflow: hidden;
     border: 1px solid var(--glass-border);
 }
@@ -687,6 +691,8 @@ main > * {
 
 .error-box {
     text-align: center;
+    width: 100%;
+    max-width: 520px;
     padding: 40px;
     background: rgba(255, 0, 0, 0.05);
     border: 2px solid var(--accent-pink);
@@ -758,10 +764,11 @@ footer {
 .options-group {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: stretch;
     gap: 10px;
     width: 100%;
-    margin-bottom: 20px;
+    max-width: none;
+    margin-bottom: 0;
 }
 
 .dropdown-label {
@@ -774,7 +781,7 @@ footer {
 .select-wrapper {
     position: relative;
     width: 100%;
-    max-width: 300px;
+    max-width: none;
 }
 
 .select-wrapper::after {
@@ -822,7 +829,7 @@ footer {
     gap: 12px;
     margin-top: 15px;
     width: 100%;
-    max-width: 300px;
+    max-width: none;
     background: rgba(0, 0, 0, 0.2);
     padding: 15px;
     border-radius: 12px;
@@ -892,22 +899,6 @@ footer {
     }
 }
 
-.options-group {
-    width: 100%;
-    max-width: none;
-    align-items: stretch;
-    margin-bottom: 0;
-}
-
-.select-wrapper {
-    max-width: none;
-}
-
-.switches-container {
-    max-width: none;
-    width: 100%;
-}
-
 .controls {
     display: flex !important;
     flex-direction: column !important;
@@ -936,22 +927,6 @@ footer {
 
 .status-section {
     width: 100%;
-}
-
-.loader-container {
-    padding: 32px 20px;
-    text-align: center;
-}
-
-.progress-container {
-    max-width: 520px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.error-box {
-    width: 100%;
-    max-width: 520px;
 }
 
 /* 3D FULLSCREEN VIEWER SIDEBAR */

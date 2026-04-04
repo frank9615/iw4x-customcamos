@@ -207,6 +207,28 @@ async function decodeIwiArrayBufferToPng(arrayBuffer, headerMeta) {
     });
 }
 
+function setExtractDownloadState() {
+    downloadSection.classList.remove('hidden');
+    downloadBtn.classList.add('hidden');
+    downloadPngBtn.classList.remove('hidden');
+    extractBtn.classList.add('hidden');
+}
+
+function applyDecodedIwiPreview(pngBlob, meta, sourceFilename) {
+    outBlob = pngBlob;
+    outFilename = sourceFilename.replace(/\.iwi$/i, '.png');
+
+    resultFilename.textContent = outFilename;
+    resultSize.textContent = formatBytes(outBlob.size);
+
+    clearPreviewObjectUrl();
+    currentPreviewObjectUrl = URL.createObjectURL(pngBlob);
+    imagePreview.src = currentPreviewObjectUrl;
+    updateCamoTexture(currentPreviewObjectUrl);
+
+    fileResLabel.textContent = `${meta.width}x${meta.height} • ${meta.formatName}`;
+}
+
 // Progress Utils
 function updateProgress(percent, msg) {
     progressBar.style.width = `${percent}%`;
@@ -311,16 +333,7 @@ async function handleFile(file) {
             const pngBlob = await decodeIwiArrayBufferToPng(arrayBuffer, currentIwiMeta);
             if (currentFile !== file) return;
 
-            clearPreviewObjectUrl();
-            currentPreviewObjectUrl = URL.createObjectURL(pngBlob);
-            imagePreview.src = currentPreviewObjectUrl;
-            updateCamoTexture(currentPreviewObjectUrl);
-
-            fileResLabel.textContent = `${currentIwiMeta.width}x${currentIwiMeta.height} • ${currentIwiMeta.formatName}`;
-            outBlob = pngBlob;
-            outFilename = currentFile.name.replace(/\.iwi$/i, '.png');
-            resultFilename.textContent = outFilename;
-            resultSize.textContent = formatBytes(outBlob.size);
+            applyDecodedIwiPreview(pngBlob, currentIwiMeta, currentFile.name);
         } catch (err) {
             showError(`IWI_PREVIEW_FAILED: ${err.message}`);
         }
@@ -355,10 +368,7 @@ extractBtn.addEventListener('click', async () => {
     if (!currentFile) return;
 
     if (outBlob && outFilename.toLowerCase().endsWith('.png')) {
-        downloadSection.classList.remove('hidden');
-        downloadBtn.classList.add('hidden');
-        downloadPngBtn.classList.remove('hidden');
-        extractBtn.classList.add('hidden');
+        setExtractDownloadState();
         return;
     }
 
@@ -371,28 +381,15 @@ extractBtn.addEventListener('click', async () => {
         renderIwiMetadata(currentIwiMeta);
 
         updateProgress(70, 'Decoding IWI texture...');
-        outBlob = await decodeIwiArrayBufferToPng(arrayBuffer, currentIwiMeta);
-        outFilename = currentFile.name.replace(/\.iwi$/i, '.png');
-
-        resultFilename.textContent = outFilename;
-        resultSize.textContent = formatBytes(outBlob.size);
-
-        clearPreviewObjectUrl();
-        currentPreviewObjectUrl = URL.createObjectURL(outBlob);
-        imagePreview.src = currentPreviewObjectUrl;
-        updateCamoTexture(currentPreviewObjectUrl);
-
-        fileResLabel.textContent = `${currentIwiMeta.width}x${currentIwiMeta.height} • ${currentIwiMeta.formatName}`;
+        const pngBlob = await decodeIwiArrayBufferToPng(arrayBuffer, currentIwiMeta);
+        applyDecodedIwiPreview(pngBlob, currentIwiMeta, currentFile.name);
 
         updateProgress(100, 'Decoding Complete!');
 
         setTimeout(() => {
             statusSection.classList.add('hidden');
             previewSection.classList.remove('hidden');
-            extractBtn.classList.add('hidden');
-            downloadSection.classList.remove('hidden');
-            downloadBtn.classList.add('hidden');
-            downloadPngBtn.classList.remove('hidden');
+            setExtractDownloadState();
         }, 350);
 
     } catch (err) {
