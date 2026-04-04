@@ -8,6 +8,9 @@ const previewSection = document.getElementById('preview-section');
 const statusSection = document.getElementById('status-section');
 const downloadSection = document.getElementById('download-section');
 const imagePreview = document.getElementById('image-preview');
+const imageLightbox = document.getElementById('image-lightbox');
+const imageLightboxPreview = document.getElementById('image-lightbox-preview');
+const imageLightboxClose = document.getElementById('image-lightbox-close');
 const fileNameLabel = document.getElementById('file-name');
 const fileResLabel = document.getElementById('file-res');
 const convertBtn = document.getElementById('convert-btn');
@@ -69,6 +72,20 @@ function clearPreviewObjectUrl() {
         URL.revokeObjectURL(currentPreviewObjectUrl);
         currentPreviewObjectUrl = null;
     }
+}
+
+function openImageLightbox() {
+    if (!imagePreview || !imagePreview.src || !imageLightbox || !imageLightboxPreview) return;
+    imageLightboxPreview.src = imagePreview.src;
+    imageLightbox.classList.remove('hidden');
+    imageLightbox.setAttribute('aria-hidden', 'false');
+}
+
+function closeImageLightbox() {
+    if (!imageLightbox || !imageLightboxPreview) return;
+    imageLightbox.classList.add('hidden');
+    imageLightbox.setAttribute('aria-hidden', 'true');
+    imageLightboxPreview.src = '';
 }
 
 function formatBytes(bytes) {
@@ -569,4 +586,27 @@ function resetUI() {
     statusSection.classList.add('hidden');
     downloadSection.classList.add('hidden');
     fileInput.value = '';
+    closeImageLightbox();
 }
+
+if (imagePreview) {
+    imagePreview.addEventListener('click', openImageLightbox);
+}
+
+if (imageLightboxClose) {
+    imageLightboxClose.addEventListener('click', closeImageLightbox);
+}
+
+if (imageLightbox) {
+    imageLightbox.addEventListener('click', (event) => {
+        if (event.target === imageLightbox) {
+            closeImageLightbox();
+        }
+    });
+}
+
+document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') {
+        closeImageLightbox();
+    }
+});
