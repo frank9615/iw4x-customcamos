@@ -5,6 +5,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>IW4X Camo Converter | Premium Modding Tool</title>
+    <meta name="description"
+        content="Create and extract IW4x IWI camo textures directly in your browser. Convert PNG/JPG/WEBP/BMP to IWI and decode IWI back to PNG with live 3D preview.">
+    <meta name="keywords" content="IW4x, IWI, camo converter, MW2, texture extractor, modding tool">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="IW4X Camo Studio">
+    <meta name="application-name" content="IW4X Camo Converter">
+    <meta name="theme-color" content="#050505">
+    <link rel="canonical" href="https://frank9615.github.io/iw4x-customcamos/public/">
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="apple-touch-icon" href="logo.png">
+    <link rel="manifest" href="manifest.webmanifest">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="IW4X Camo Converter">
+    <meta property="og:description"
+        content="Convert and extract IWI camo textures with real-time preview and modern browser-based tooling.">
+    <meta property="og:url" content="https://frank9615.github.io/iw4x-customcamos/public/">
+    <meta property="og:image" content="https://frank9615.github.io/iw4x-customcamos/public/logo.png">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="IW4X Camo Converter">
+    <meta name="twitter:description" content="Create and extract IW4x IWI camos in-browser with live preview.">
+    <meta name="twitter:image" content="https://frank9615.github.io/iw4x-customcamos/public/logo.png">
+    <script type="application/ld+json">
+            {
+                "@context": "https://schema.org",
+                "@type": "WebApplication",
+                "name": "IW4X Camo Converter",
+                "applicationCategory": "MultimediaApplication",
+                "operatingSystem": "Any",
+                "url": "https://frank9615.github.io/iw4x-customcamos/public/",
+                "description": "Browser app to convert images to IWI and extract IWI textures to PNG for IW4x."
+            }
+        </script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-70W7Z7BQSJ"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+
+        gtag('config', 'G-70W7Z7BQSJ');
+    </script>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -68,6 +109,21 @@
                         <div class="image-info">
                             <span id="file-name" class="file-name">texture_gold.png</span>
                             <span id="file-res" class="file-res">1024x1024</span>
+                        </div>
+                        <div id="iwi-metadata" class="iwi-metadata hidden" aria-live="polite">
+                            <h4>IWI File Details</h4>
+                            <div class="iwi-grid">
+                                <div><span>Magic</span><strong id="iwi-meta-magic">-</strong></div>
+                                <div><span>Version</span><strong id="iwi-meta-version">-</strong></div>
+                                <div><span>Format</span><strong id="iwi-meta-format">-</strong></div>
+                                <div><span>Dimensions</span><strong id="iwi-meta-dimensions">-</strong></div>
+                                <div><span>Depth</span><strong id="iwi-meta-depth">-</strong></div>
+                                <div><span>Flags</span><strong id="iwi-meta-flags">-</strong></div>
+                                <div><span>Mip Offsets</span><strong id="iwi-meta-mips">-</strong></div>
+                                <div><span>Data Size</span><strong id="iwi-meta-data">-</strong></div>
+                                <div><span>Total Size</span><strong id="iwi-meta-total">-</strong></div>
+                                <div><span>Alpha</span><strong id="iwi-meta-alpha">-</strong></div>
+                            </div>
                         </div>
                     </div>
                 </div>

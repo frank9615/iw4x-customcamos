@@ -1,0 +1,24 @@
+{
+    "name": "IW4X Camo Converter",
+    "short_name": "IW4X Camo",
+    "description": "Create and extract IW4x IWI camo textures directly in your browser.",
+    "start_url": "./",
+    "scope": "./",
+    "display": "standalone",
+    "background_color": "#050505",
+    "theme_color": "#050505",
+    "icons": [
+        {
+            "src": "logo.png",
+            "sizes": "1024x1024",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "logo.png",
+            "sizes": "1024x1024",
+            "type": "image/png",
+            "purpose": "maskable"
+        }
+    ]
+}
